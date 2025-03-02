@@ -70,8 +70,7 @@ jobs:
               run: |
                 ls -la
                 ls -la ansible/
-            - name: Run Main Playbook
+            - name: Run main playbook
               run: |
-                echo "${{ secrets.SUDO_PASSWORD }}" > ansible/vault.txt
-                chmod 600 ansible/vault.txt
-                ANSIBLE_CONFIG=ansible/ansible.cfg ansible-playbook ansible/services.yml --vault-password-file=ansible/vault.txt -e "ansible_become_password=${{ secrets.SUDO_PASSWORD }}" -vvv 
+                sh update-sudo-pass-secret.sh ${{ secrets.SUDO_PASSWORD }}
+                ANSIBLE_CONFIG=ansible/ansible.cfg ansible-playbook ansible/services.yml --vault-password-file=ansible/vault.txt
