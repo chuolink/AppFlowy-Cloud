@@ -10,12 +10,12 @@ on:
         type: string
         description: 'Remote User'
         required: true
-        default: 'ubuntu'
+        default: 'tester'
       HOME_DIR:
         type: string
         description: 'Home Directory'
         required: true
-        default: '/home/ubuntu'
+        default: '/home/tester'
       TARGET_HOST:
         type: string
         description: 'Target Host'
@@ -30,7 +30,7 @@ jobs:
     ansible: 
         runs-on: ubuntu-latest
         env:
-            HOME_DIR: "${{ inputs.HOME_DIR || '/home/ubuntu' }}"
+            HOME_DIR: "${{ inputs.HOME_DIR || '/home/tester' }}"
 
         steps:
             - name: Checkout
