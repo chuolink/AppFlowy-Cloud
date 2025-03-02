@@ -17,17 +17,31 @@
         name: "api-gateway"
         state: absent
         force_kill: true
-    - name: Ensure destination directory exists with correct permissions
+    - name: Remove existing directory if any
+      ansible.builtin.file:
+        path: "{{ lookup('ansible.builtin.env', 'HOME_DIR') }}/{{ lookup('ansible.builtin.env', 'PROJECT_DIR') }}/appflowy"
+        state: absent
+      become: true
+
+    - name: Create new directory with proper permissions
       ansible.builtin.file:
         path: "{{ lookup('ansible.builtin.env', 'HOME_DIR') }}/{{ lookup('ansible.builtin.env', 'PROJECT_DIR') }}/appflowy"
         state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
         mode: '0755'
       become: true
-    - name: Copy project files
-      ansible.builtin.copy:
+    - name: Sync entire project (minimal approach)
+      ansible.builtin.synchronize:
         src: "{{ playbook_dir | dirname | dirname }}/"
         dest: "{{ lookup('ansible.builtin.env', 'HOME_DIR') }}/{{ lookup('ansible.builtin.env', 'PROJECT_DIR') }}/appflowy/"
-        mode: '0755'
+        rsync_opts:
+          - "--exclude=.git"
+          - "--exclude=node_modules"
+          - "--exclude=.github"
+        archive: false
+        use_ssh_args: true
+      become: false
     - name: Run docker compose
       community.docker.docker_compose_v2:
         project_src: "{{ lookup('ansible.builtin.env', 'HOME_DIR') }}/{{ lookup('ansible.builtin.env', 'PROJECT_DIR') }}/appflowy"
