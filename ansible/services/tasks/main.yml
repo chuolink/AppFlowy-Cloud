@@ -28,6 +28,7 @@
         delete: no
       become: true
       become_method: sudo
+      become_flags: "-n"
     - name: Run docker compose
       community.docker.docker_compose_v2:
         project_src: "{{ lookup('ansible.builtin.env', 'HOME_DIR') }}/{{ lookup('ansible.builtin.env', 'PROJECT_DIR') }}/appflowy"
