@@ -23,25 +23,23 @@
         state: absent
       become: true
 
-    - name: Create new directory with proper permissions
-      ansible.builtin.file:
-        path: "{{ lookup('ansible.builtin.env', 'HOME_DIR') }}/{{ lookup('ansible.builtin.env', 'PROJECT_DIR') }}/appflowy"
-        state: directory
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        mode: '0755'
-      become: true
-    - name: Sync entire project (minimal approach)
+    - name: Verbose sync with synchronize
       ansible.builtin.synchronize:
-        src: "{{ playbook_dir | dirname | dirname }}/"
-        dest: "{{ lookup('ansible.builtin.env', 'HOME_DIR') }}/{{ lookup('ansible.builtin.env', 'PROJECT_DIR') }}/appflowy/"
+        src: "{{ playbook_dir | dirname }}/"
+        dest: "{{ lookup('ansible.builtin.env', 'HOME_DIR') }}/{{ lookup('ansible.builtin.env', 'PROJECT_DIR') }}/appflowy"
         rsync_opts:
           - "--exclude=.git"
           - "--exclude=node_modules"
           - "--exclude=.github"
+          - "-v"  # Verbose output
         archive: false
         use_ssh_args: true
       become: false
+      register: sync_output
+
+    - name: Display sync output
+      ansible.builtin.debug:
+        var: sync_output
     - name: Run docker compose
       community.docker.docker_compose_v2:
         project_src: "{{ lookup('ansible.builtin.env', 'HOME_DIR') }}/{{ lookup('ansible.builtin.env', 'PROJECT_DIR') }}/appflowy"
