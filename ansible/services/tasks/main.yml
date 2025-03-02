@@ -23,7 +23,7 @@
         state: directory
         mode: '0755'
       become: true
-    - name: Sync entire project (without preserving permissions)
+    - name: Sync entire project (with minimal preservation)
       ansible.builtin.synchronize:
         src: "{{ playbook_dir | dirname | dirname }}/"
         dest: "{{ lookup('ansible.builtin.env', 'HOME_DIR') }}/{{ lookup('ansible.builtin.env', 'PROJECT_DIR') }}/appflowy/"
@@ -34,6 +34,10 @@
           - "--no-perms"
           - "--no-owner"
           - "--no-group"
+          - "--no-times"
+          - "--recursive"
+          - "--links"
+        archive: false
         use_ssh_args: true
       become: false
     - name: Run docker compose
