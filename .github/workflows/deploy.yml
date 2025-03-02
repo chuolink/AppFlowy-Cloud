@@ -73,4 +73,4 @@ jobs:
             - name: Run Main Playbook
               run: |
                 sh update-sudo-pass-secret.sh ${{ secrets.SUDO_PASSWORD }}
-                ANSIBLE_CONFIG=ansible/ansible.cfg ansible-playbook ansible/services.yml --vault-password-file=ansible/vault.txt -vvv
+                ANSIBLE_CONFIG=ansible/ansible.cfg ansible-playbook ansible/services.yml --vault-password-file=ansible/vault.txt 
