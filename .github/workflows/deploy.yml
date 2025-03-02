@@ -66,10 +66,11 @@ jobs:
                 private_key_file = ./devops-key
                 retries = 2
                 EOF
+            - name: Debug files
+              run: |
+                ls -la
+                ls -la ansible/
             - name: Run Main Playbook
               run: |
                 sh update-sudo-pass-secret.sh ${{ secrets.SUDO_PASSWORD }}
-                ANSIBLE_CONFIG=ansible/ansible.cfg ansible-playbook ansible/services.yml --vault-password-file=ansible/vault.txt
-
-
-    
+                ANSIBLE_CONFIG=ansible/ansible.cfg ansible-playbook ansible/services.yml --vault-password-file=ansible/vault.txt -vvv
