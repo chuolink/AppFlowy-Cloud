@@ -17,11 +17,6 @@
         name: "api-gateway"
         state: absent
         force_kill: true
-    - name: Remove existing directory if any
-      ansible.builtin.file:
-        path: "{{ lookup('ansible.builtin.env', 'HOME_DIR') }}/{{ lookup('ansible.builtin.env', 'PROJECT_DIR') }}/appflowy"
-        state: absent
-      become: true
 
     - name: Verbose sync with synchronize
       ansible.builtin.synchronize:
@@ -33,7 +28,7 @@
           - "--exclude=.github"
           - "-v"  # Verbose output
         use_ssh_args: true
-      become: false
+      become: true
       register: sync_output
 
     - name: Display sync output
