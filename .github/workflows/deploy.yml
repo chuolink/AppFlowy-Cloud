@@ -1,0 +1,75 @@
+name: services
+
+on:
+  repository_dispatch:
+    types: [update-services]
+    
+  workflow_dispatch:
+    inputs:
+      REMOTE_USER:
+        type: string
+        description: 'Remote User'
+        required: true
+        default: 'ubuntu'
+      HOME_DIR:
+        type: string
+        description: 'Home Directory'
+        required: true
+        default: '/home/ubuntu'
+      TARGET_HOST:
+        type: string
+        description: 'Target Host'
+        required: true
+        default: "chuolink.com"
+env:
+  REMOTE_USER: ${{ inputs.REMOTE_USER }}
+  HOME_DIR: ${{ inputs.HOME_DIR }}
+  TARGET_HOST: ${{ inputs.TARGET_HOST }}
+
+jobs:
+    ansible: 
+        runs-on: ubuntu-latest
+        env:
+            HOME_DIR: "${{ inputs.HOME_DIR || '/home/ubuntu' }}"
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            
+            - name: Setup SSh Keys
+              run: |
+                cat << EOF > ansible/devops-key
+                ${{ secrets.SSH_PRIVATE_KEY }}
+                EOF
+            - name: Update devops key file permissions
+              run: |
+                chmod 400 ansible/devops-key
+            - name: Install Ansible
+              run: |
+                pip install ansible
+            - name: Adding ansible inventory file
+              run: |
+                cat << EOF > ansible/inventory.ini
+                [webservers]
+                ${{ env.TARGET_HOST }}
+                EOF
+            - name: Adding ansible config file
+              run: |
+                cat << EOF > ./ansible/ansible.cfg
+                [defaults]
+                ansible_python_interpreter='/usr/bin/python3'
+                deprecation_warnings=False
+                inventory = ./inventory.ini
+                remote_temp="${{inputs.HOME_DIR}}/.ansible/tmp"
+                remote_user="${{env.REMOTE_USER}}"
+                host_key_checking=False
+                private_key_file = ./devops-key
+                retries = 2
+                EOF
+            - name: Run Main Playbook
+              run: |
+                sh update-sudo-pass-secret.sh ${{ secrets.SUDO_PASSWORD }}
+                ANSIBLE_CONFIG=ansible/ansible.cfg ansible-playbook ansible/services.yml --vault-password-file=ansible/vault.txt
+
+
+    

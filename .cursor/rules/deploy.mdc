@@ -1,0 +1,33 @@
+---
+description: Required to deploy appflowy with ansible
+globs: *
+---
+
+# AppFlowy Deployment Project Rules
+
+## Project Overview
+This document defines rules and guidelines for deploying an open-source version of AppFlowy using Docker Compose, with integration into an existing Traefik setup for domain routing.
+
+## Environment Configuration
+- Server already has Docker installed
+- Traefik is already deployed and running
+- Multiple other containers exist on the server
+- Using Ansible for deployment automation
+- Using Cursor IDE for development
+
+## Deployment Rules
+
+### Code Organization
+- Store all Ansible playbooks in `./ansible/` directory
+- Keep Docker Compose files in `./docker/` directory
+- Environment variables should be in `.env` files, with examples in `.env.example`
+
+### Docker Rules
+- All AppFlowy services must connect to the existing Traefik network
+
+
+### Traefik Integration Rules
+- Use Traefik labels for all routing
+- Use HTTPS with automatic certificate renewal
+- Implement proper path routing with host rules
+- Configure proper entrypoints

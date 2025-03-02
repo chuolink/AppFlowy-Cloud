@@ -1,0 +1,8 @@
+---
+- hosts: webservers
+  vars_files:
+    - secret
+  roles:
+    - services
+  
+
