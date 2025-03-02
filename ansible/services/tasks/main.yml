@@ -1,6 +1,10 @@
 - name: apps
   become: true
   block:
+    - name: Create traefik_network
+      community.docker.docker_network:
+        name: traefik_network
+      register: n_output
     - name: Debug output
       ansible.builtin.debug:
         var: n_output
