@@ -11,12 +11,9 @@ yarn.lock
 node_modules
 **/libs/AppFlowy-Collab/
 data/
-.env
 .logs
 flake.nix
 flake.lock
 .envrc
 .direnv/
-
 **/.DS_Store
-**/.env.*
