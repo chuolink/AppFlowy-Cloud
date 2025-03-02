@@ -51,7 +51,7 @@ jobs:
               run: |
                 cat << EOF > ansible/inventory.ini
                 [webservers]
-                ${{ env.TARGET_HOST }}
+                ${{ env.TARGET_HOST }} ansible_python_interpreter=/usr/bin/python3
                 EOF
             - name: Adding ansible config file
               run: |
