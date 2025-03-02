@@ -17,11 +17,15 @@
         name: "api-gateway"
         state: absent
         force_kill: true
-    - name: Copy project files
-      ansible.builtin.copy:
+    - name: Sync entire project (optimized)
+      ansible.builtin.synchronize:
         src: "{{ playbook_dir | dirname | dirname }}/"
         dest: "{{ lookup('ansible.builtin.env', 'HOME_DIR') }}/{{ lookup('ansible.builtin.env', 'PROJECT_DIR') }}/appflowy/"
-        mode: '0755'
+        rsync_opts:
+          - "--exclude=.git"
+          - "--compress"
+          - "--archive"
+        delete: no
     - name: Run docker compose
       community.docker.docker_compose_v2:
         project_src: "{{ lookup('ansible.builtin.env', 'HOME_DIR') }}/{{ lookup('ansible.builtin.env', 'PROJECT_DIR') }}/appflowy"
