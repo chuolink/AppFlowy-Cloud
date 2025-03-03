@@ -27,6 +27,7 @@
           - "--exclude=node_modules"
           - "--exclude=.github"
           - "-v"  # Verbose output
+        rsync_path: "sudo -S rsync"
         use_ssh_args: true
        
       register: sync_output
