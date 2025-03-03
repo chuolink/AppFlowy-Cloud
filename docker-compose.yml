@@ -169,15 +169,65 @@ services:
       gotrue:
         condition: service_healthy
     labels:
+      # CORS middleware
+      - "traefik.http.middlewares.cors-headers.headers.accessControlAllowMethods=GET,POST,PUT,DELETE,PATCH,OPTIONS"
+      - "traefik.http.middlewares.cors-headers.headers.accessControlAllowHeaders=Content-Type, Authorization, Accept, Client-Version, Device-Id"
+      - "traefik.http.middlewares.cors-headers.headers.accessControlAllowOriginList=http://localhost:3000"
+      - "traefik.http.middlewares.cors-headers.headers.accessControlMaxAge=3600"
+      - "traefik.http.middlewares.cors-headers.headers.addVaryHeader=true"
+      
+      # Main API routes
       - "traefik.enable=true"
-      - "traefik.http.routers.appflowy-cloud.rule=Host(`flowy.chuolink.com`) && PathPrefix(`/api`)"
-      # - "traefik.http.middlewares.appflowy-cloud-stripprefix.stripprefix.prefixes=/api"
-      # - "traefik.http.routers.appflowy-cloud.middlewares=appflowy-cloud-stripprefix@docker"
+      - "traefik.http.routers.appflowy-cloud.rule=Host(`flowy.chuolink.com`) && PathPrefix(`/api`) && !PathPrefix(`/api/chat`) && !PathPrefix(`/api/import`) && !PathRegexp(`/api/workspace/[a-zA-Z0-9_-]+/publish`)"
       - "traefik.http.routers.appflowy-cloud.entrypoints=websecure"
       - "traefik.http.routers.appflowy-cloud.tls=true"
       - "traefik.http.routers.appflowy-cloud.tls.certresolver=production"
       - "traefik.http.services.appflowy-cloud.loadbalancer.server.port=8000"
+      - "traefik.http.routers.appflowy-cloud.middlewares=cors-headers@docker"
       - "traefik.docker.network=traefik_network"
+      
+      # WebSocket support
+      - "traefik.http.routers.appflowy-websocket.rule=Host(`flowy.chuolink.com`) && PathPrefix(`/ws`)"
+      - "traefik.http.routers.appflowy-websocket.entrypoints=websecure"
+      - "traefik.http.routers.appflowy-websocket.tls=true"
+      - "traefik.http.routers.appflowy-websocket.tls.certresolver=production"
+      - "traefik.http.services.appflowy-websocket.loadbalancer.server.port=8000"
+      - "traefik.http.routers.appflowy-websocket.service=appflowy-websocket"
+      # Enable websocket protocol
+      - "traefik.http.middlewares.appflowy-websocket-mw.headers.customrequestheaders.Host=flowy.chuolink.com"
+      - "traefik.http.middlewares.appflowy-websocket-mw.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.routers.appflowy-websocket.middlewares=appflowy-websocket-mw@docker"
+      
+      # Chat API - needs streaming support
+      - "traefik.http.routers.appflowy-chat.rule=Host(`flowy.chuolink.com`) && PathPrefix(`/api/chat`)"
+      - "traefik.http.routers.appflowy-chat.entrypoints=websecure"
+      - "traefik.http.routers.appflowy-chat.tls=true"
+      - "traefik.http.routers.appflowy-chat.tls.certresolver=production"
+      - "traefik.http.routers.appflowy-chat.service=appflowy-chat"
+      - "traefik.http.services.appflowy-chat.loadbalancer.server.port=8000"
+      - "traefik.http.middlewares.appflowy-chat-buffering.buffering.maxRequestBodyBytes=0"
+      - "traefik.http.middlewares.appflowy-chat-buffering.buffering.memRequestBodyBytes=0"
+      - "traefik.http.routers.appflowy-chat.middlewares=appflowy-chat-buffering@docker,cors-headers@docker"
+      
+      # Import API - needs large file upload support
+      - "traefik.http.routers.appflowy-import.rule=Host(`flowy.chuolink.com`) && PathPrefix(`/api/import`)"
+      - "traefik.http.routers.appflowy-import.entrypoints=websecure"
+      - "traefik.http.routers.appflowy-import.tls=true"
+      - "traefik.http.routers.appflowy-import.tls.certresolver=production"
+      - "traefik.http.routers.appflowy-import.service=appflowy-import"
+      - "traefik.http.services.appflowy-import.loadbalancer.server.port=8000"
+      - "traefik.http.middlewares.appflowy-import-buffering.buffering.maxRequestBodyBytes=2147483648" # 2GB like in nginx
+      - "traefik.http.middlewares.appflowy-import-buffering.buffering.memRequestBodyBytes=0"
+      - "traefik.http.routers.appflowy-import.middlewares=appflowy-import-buffering@docker,cors-headers@docker"
+      
+      # Workspace publish API - needs specialized handling
+      - "traefik.http.routers.appflowy-workspace-publish.rule=Host(`flowy.chuolink.com`) && PathRegexp(`/api/workspace/([a-zA-Z0-9_-]+)/publish`)"
+      - "traefik.http.routers.appflowy-workspace-publish.entrypoints=websecure"
+      - "traefik.http.routers.appflowy-workspace-publish.tls=true"
+      - "traefik.http.routers.appflowy-workspace-publish.tls.certresolver=production"
+      - "traefik.http.services.appflowy-workspace-publish.loadbalancer.server.port=8000"
+      - "traefik.http.middlewares.appflowy-workspace-publish-buffering.buffering.maxRequestBodyBytes=268435456" # 256MB
+      - "traefik.http.routers.appflowy-workspace-publish.middlewares=appflowy-workspace-publish-buffering@docker,cors-headers@docker"
     networks:
       - default
       - traefik_network
