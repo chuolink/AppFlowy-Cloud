@@ -171,8 +171,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.appflowy-cloud.rule=Host(`flowy.chuolink.com`) && PathPrefix(`/api`)"
-      - "traefik.http.middlewares.appflowy-cloud-stripprefix.stripprefix.prefixes=/api"
-      - "traefik.http.routers.appflowy-cloud.middlewares=appflowy-cloud-stripprefix@docker"
+      # - "traefik.http.middlewares.appflowy-cloud-stripprefix.stripprefix.prefixes=/api"
+      # - "traefik.http.routers.appflowy-cloud.middlewares=appflowy-cloud-stripprefix@docker"
       - "traefik.http.routers.appflowy-cloud.entrypoints=websecure"
       - "traefik.http.routers.appflowy-cloud.tls=true"
       - "traefik.http.routers.appflowy-cloud.tls.certresolver=production"
