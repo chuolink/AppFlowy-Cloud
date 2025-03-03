@@ -192,7 +192,8 @@ services:
       - "traefik.http.routers.appflowy-websocket.entrypoints=websecure"
       - "traefik.http.routers.appflowy-websocket.tls=true"
       - "traefik.http.routers.appflowy-websocket.tls.certresolver=production"
-      - "traefik.http.services.appflowy-websocket.loadbalancer.server.port=8000"
+      - "traefik.http.services.appflowy-websocket-service.loadbalancer.server.port=8000"
+      - "traefik.http.routers.appflowy-websocket.service=appflowy-websocket-service"
       # Enable websocket protocol
       - "traefik.http.middlewares.appflowy-websocket-mw.headers.customrequestheaders.Host=flowy.chuolink.com"
       - "traefik.http.middlewares.appflowy-websocket-mw.headers.customrequestheaders.X-Forwarded-Proto=https"
