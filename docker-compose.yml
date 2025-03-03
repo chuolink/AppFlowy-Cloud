@@ -113,7 +113,7 @@ services:
       - GOTRUE_EXTERNAL_DISCORD_REDIRECT_URI=${GOTRUE_EXTERNAL_DISCORD_REDIRECT_URI}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.gotrue.rule=Host(`flowy.chuolink.com`) && PathPrefix(`/auth`)"
+      - "traefik.http.routers.gotrue.rule=Host(`flowy.chuolink.com`) && PathPrefix(`/gotrue`)"
       # - "traefik.http.middlewares.gotrue-stripprefix.stripprefix.prefixes=/auth"
       # - "traefik.http.routers.gotrue.middlewares=gotrue-stripprefix@docker"
       - "traefik.http.routers.gotrue.entrypoints=websecure"
