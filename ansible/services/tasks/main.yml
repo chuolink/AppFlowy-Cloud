@@ -28,8 +28,7 @@
           - "--exclude=.github"
           - "-v"  # Verbose output
         use_ssh_args: true
-        
-      become: true
+       
       register: sync_output
 
     - name: Display sync output
