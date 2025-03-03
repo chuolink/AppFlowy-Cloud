@@ -178,7 +178,7 @@ services:
       
       # Main API routes
       - "traefik.enable=true"
-      - "traefik.http.routers.appflowy-cloud.rule=Host(`flowy.chuolink.com`) && PathPrefix(`/api`) && !PathPrefix(`/api/chat`) && !PathPrefix(`/api/import`) && !PathRegexp(`/api/workspace/[a-zA-Z0-9_-]+/publish`)"
+      - "traefik.http.routers.appflowy-cloud.rule=Host(`flowy.chuolink.com`) && PathPrefix(`/api`) && !PathPrefix(`/api/chat`) && !PathPrefix(`/api/import`) && !Path(`/api/workspace/{workspace:[a-zA-Z0-9_-]+}/publish`)"
       - "traefik.http.routers.appflowy-cloud.entrypoints=websecure"
       - "traefik.http.routers.appflowy-cloud.tls=true"
       - "traefik.http.routers.appflowy-cloud.tls.certresolver=production"
@@ -221,7 +221,7 @@ services:
       - "traefik.http.routers.appflowy-import.middlewares=appflowy-import-buffering@docker,cors-headers@docker"
       
       # Workspace publish API - needs specialized handling
-      - "traefik.http.routers.appflowy-workspace-publish.rule=Host(`flowy.chuolink.com`) && PathRegexp(`/api/workspace/([a-zA-Z0-9_-]+)/publish`)"
+      - "traefik.http.routers.appflowy-workspace-publish.rule=Host(`flowy.chuolink.com`) && Path(`/api/workspace/{workspace:[a-zA-Z0-9_-]+}/publish`)"
       - "traefik.http.routers.appflowy-workspace-publish.entrypoints=websecure"
       - "traefik.http.routers.appflowy-workspace-publish.tls=true"
       - "traefik.http.routers.appflowy-workspace-publish.tls.certresolver=production"
