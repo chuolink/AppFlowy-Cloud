@@ -16,7 +16,7 @@ services:
       - minio_data:/data
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.minio.rule=Host(`${FQDN}`) && PathPrefix(`/minio`)"
+      - "traefik.http.routers.minio.rule=Host(`flowy.chuolink.com`) && PathPrefix(`/minio`)"
       - "traefik.http.routers.minio.entrypoints=websecure"
       - "traefik.http.routers.minio.tls=true"
       - "traefik.http.routers.minio.tls.certresolver=production"
@@ -109,7 +109,7 @@ services:
       - GOTRUE_EXTERNAL_DISCORD_REDIRECT_URI=${GOTRUE_EXTERNAL_DISCORD_REDIRECT_URI}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.gotrue.rule=Host(`${FQDN}`) && PathPrefix(`/auth`)"
+      - "traefik.http.routers.gotrue.rule=Host(`flowy.chuolink.com`) && PathPrefix(`/auth`)"
       - "traefik.http.routers.gotrue.entrypoints=websecure"
       - "traefik.http.routers.gotrue.tls=true"
       - "traefik.http.routers.gotrue.tls.certresolver=production"
@@ -164,7 +164,7 @@ services:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.appflowy-cloud.rule=Host(`${FQDN}`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.appflowy-cloud.rule=Host(`flowy.chuolink.com`) && PathPrefix(`/api`)"
       - "traefik.http.routers.appflowy-cloud.entrypoints=websecure"
       - "traefik.http.routers.appflowy-cloud.tls=true"
       - "traefik.http.routers.appflowy-cloud.tls.certresolver=production"
@@ -191,7 +191,7 @@ services:
         condition: service_started
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.admin-frontend.rule=Host(`${FQDN}`) && PathPrefix(`${ADMIN_FRONTEND_PATH_PREFIX:-/admin}`)"
+      - "traefik.http.routers.admin-frontend.rule=Host(`flowy.chuolink.com`) && PathPrefix(`${ADMIN_FRONTEND_PATH_PREFIX:-/admin}`)"
       - "traefik.http.routers.admin-frontend.entrypoints=websecure"
       - "traefik.http.routers.admin-frontend.tls=true"
       - "traefik.http.routers.admin-frontend.tls.certresolver=production"
@@ -214,7 +214,7 @@ services:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.appflowy-ai.rule=Host(`${FQDN}`) && PathPrefix(`/ai`)"
+      - "traefik.http.routers.appflowy-ai.rule=Host(`flowy.chuolink.com`) && PathPrefix(`/ai`)"
       - "traefik.http.routers.appflowy-ai.entrypoints=websecure"
       - "traefik.http.routers.appflowy-ai.tls=true"
       - "traefik.http.routers.appflowy-ai.tls.certresolver=production"
@@ -263,7 +263,7 @@ services:
       - AF_GOTRUE_URL=${API_EXTERNAL_URL}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.appflowy-web.rule=Host(`${FQDN}`)"
+      - "traefik.http.routers.appflowy-web.rule=Host(`flowy.chuolink.com`)"
       - "traefik.http.routers.appflowy-web.entrypoints=websecure"
       - "traefik.http.routers.appflowy-web.tls=true"
       - "traefik.http.routers.appflowy-web.tls.certresolver=production"
