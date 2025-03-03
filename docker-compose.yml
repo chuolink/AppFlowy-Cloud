@@ -19,7 +19,10 @@ services:
       - "traefik.http.routers.minio.rule=Host(`${FQDN}`) && PathPrefix(`/minio`)"
       - "traefik.http.routers.minio.entrypoints=websecure"
       - "traefik.http.routers.minio.tls=true"
+      - "traefik.http.routers.minio.tls.certresolver=production"
       - "traefik.http.services.minio.loadbalancer.server.port=9001"
+      - "traefik.docker.network=traefik_network"
+
     networks:
       - default
       - traefik_network
@@ -109,7 +112,9 @@ services:
       - "traefik.http.routers.gotrue.rule=Host(`${FQDN}`) && PathPrefix(`/auth`)"
       - "traefik.http.routers.gotrue.entrypoints=websecure"
       - "traefik.http.routers.gotrue.tls=true"
+      - "traefik.http.routers.gotrue.tls.certresolver=production"
       - "traefik.http.services.gotrue.loadbalancer.server.port=9999"
+      - "traefik.docker.network=traefik_network"
     networks:
       - default
       - traefik_network
@@ -162,7 +167,9 @@ services:
       - "traefik.http.routers.appflowy-cloud.rule=Host(`${FQDN}`) && PathPrefix(`/api`)"
       - "traefik.http.routers.appflowy-cloud.entrypoints=websecure"
       - "traefik.http.routers.appflowy-cloud.tls=true"
+      - "traefik.http.routers.appflowy-cloud.tls.certresolver=production"
       - "traefik.http.services.appflowy-cloud.loadbalancer.server.port=8000"
+      - "traefik.docker.network=traefik_network"
     networks:
       - default
       - traefik_network
@@ -187,7 +194,9 @@ services:
       - "traefik.http.routers.admin-frontend.rule=Host(`${FQDN}`) && PathPrefix(`${ADMIN_FRONTEND_PATH_PREFIX:-/admin}`)"
       - "traefik.http.routers.admin-frontend.entrypoints=websecure"
       - "traefik.http.routers.admin-frontend.tls=true"
+      - "traefik.http.routers.admin-frontend.tls.certresolver=production"
       - "traefik.http.services.admin-frontend.loadbalancer.server.port=3000"
+      - "traefik.docker.network=traefik_network"
     networks:
       - default
       - traefik_network
@@ -208,7 +217,9 @@ services:
       - "traefik.http.routers.appflowy-ai.rule=Host(`${FQDN}`) && PathPrefix(`/ai`)"
       - "traefik.http.routers.appflowy-ai.entrypoints=websecure"
       - "traefik.http.routers.appflowy-ai.tls=true"
+      - "traefik.http.routers.appflowy-ai.tls.certresolver=production"
       - "traefik.http.services.appflowy-ai.loadbalancer.server.port=${AI_SERVER_PORT}"
+      - "traefik.docker.network=traefik_network"
     networks:
       - default
       - traefik_network
@@ -255,7 +266,9 @@ services:
       - "traefik.http.routers.appflowy-web.rule=Host(`${FQDN}`)"
       - "traefik.http.routers.appflowy-web.entrypoints=websecure"
       - "traefik.http.routers.appflowy-web.tls=true"
+      - "traefik.http.routers.appflowy-web.tls.certresolver=production"
       - "traefik.http.services.appflowy-web.loadbalancer.server.port=80"
+      - "traefik.docker.network=traefik_network"
     networks:
       - default
       - traefik_network
